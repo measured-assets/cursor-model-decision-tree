@@ -69,7 +69,7 @@ graph LR
         Logic_Stage{Stage?}
         DBA{Risk Level?}
         Architect[GPT-5.2<br><b>Architect</b>]
-        Implementation{Edit Scale?}
+        Implementation{Reasoning <br> vs Sprawl?}
     end
 
     %% ==========================================
@@ -120,9 +120,9 @@ graph LR
     Logic_Stage -- "Database" --> DBA
 
     %% Implementation Choices
-    Implementation -- "Multi-file" --> Composer
-    Implementation -- "Complex" --> Senior
-    Implementation -- "Simple" --> Daily
+    Implementation -- "Many Files / <br> Standard Pattern" --> Composer
+    Implementation -- "Heavy Logic / <br> Complex Algo" --> Senior
+    Implementation -- "Simple Fix / <br> One Function" --> Daily
 
     %% Database Choices
     DBA -- "New Table" --> Senior
