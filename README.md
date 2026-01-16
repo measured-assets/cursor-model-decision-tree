@@ -103,3 +103,8 @@ graph TD
     Critique --> |LGTM| Deploy([✅ Deploy])
     Engineer --> |Fixed| Deploy
 ```
+
+## Notes & Fallbacks
+
+- **DeepSeek Availability:** If `DeepSeek V3` is unavailable for testing or "intern" tasks, the fallback model is **Gemini 3 Flash**.
+
