@@ -36,75 +36,130 @@ Verify: `DeepSeek V3` writes regression tests to ensure safety.
 ## Decision Tree Diagram
 
 ```mermaid
-graph TD
-    %% --- Explicit Node Definitions (To prevent shape errors) ---
-    Start([🚀 Start Task])
-    Q1{Task Type?}
-    UI_Input{Input Source?}
-    UI_Logic{State Complexity?}
-    UI_Review{Tweaks Needed?}
-    Logic_Stage{Stage of Work?}
-    Implementation{Scale of Edit?}
-    GruntWork{Needs Tests <br> or Docs?}
-    Review{Final Check}
+graph LR
+    %% ==========================================
+    %% 1. STYLES & DEFINITIONS
+    %% ==========================================
+    classDef decision fill:#fff9c4,stroke:#fbc02d,stroke-width:2px,rx:5,ry:5,color:#000
+    classDef persona fill:#e1f5fe,stroke:#0288d1,stroke-width:2px,rx:10,ry:10,color:#000
+    classDef expert fill:#ffccbc,stroke:#d84315,stroke-width:2px,rx:10,ry:10,color:#000
+    classDef intern fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,rx:10,ry:10,color:#000
+    classDef finish fill:#c8e6c9,stroke:#388e3c,stroke-width:2px,rx:20,ry:20,color:#000
 
-    %% --- Start Flow ---
-    Start --> Q1
+    Start([🚀 Start]) --> Q1{Task Type?}
 
     %% ==========================================
-    %% BRANCH 1: THE VISUAL / FRONTEND PATH
+    %% 2. FRONTEND WORKFLOW (Top Lane)
     %% ==========================================
+    subgraph UI_Flow ["🎨 Frontend & Visuals"]
+        direction TB
+        UI_Input{Input Source?}
+        Designer[Gemini 3 Pro<br><b>Designer</b>]
+        UI_Build[Generated Component]
+        UI_Review{Tweaks?}
+        UI_Logic{State?}
+        Styler[Gemini 3 Flash<br><b>Fast Fixer</b>]
+    end
+
+    %% ==========================================
+    %% 3. BACKEND WORKFLOW (Middle Lane)
+    %% ==========================================
+    subgraph Backend_Flow ["⚙️ Logic & Architecture"]
+        direction TB
+        Logic_Stage{Stage?}
+        DBA{Risk Level?}
+        Architect[GPT-5.2<br><b>Architect</b>]
+        Implementation{Edit Scale?}
+    end
+
+    %% ==========================================
+    %% 4. THE AI TEAM (Shared Resources)
+    %% ==========================================
+    %% These nodes are shared, so they sit between flows
+    Composer[Composer 1<br><b>Builder</b>]
+    Senior[Claude Sonnet 4.5<br><b>Senior Logic</b>]
+    Daily[Gemini 3 Flash<br><b>Daily Driver</b>]
+    Engineer[Claude Opus 4.5<br><b>Expert</b>]
+
+    %% ==========================================
+    %% 5. QA & REVIEW (End Lane)
+    %% ==========================================
+    subgraph QA_Flow ["✅ QA & Review"]
+        direction TB
+        GruntWork{Tests/Docs?}
+        Intern[DeepSeek V3<br><b>Intern</b>]
+        Review{Final Check}
+        Critique[Gemini 3 Pro<br><b>Auditor</b>]
+        Deploy([✅ Deploy])
+    end
+
+    %% ==========================================
+    %% 6. CONNECTIONS
+    %% ==========================================
+
+    %% Main Split
     Q1 -- "UI & Frontend" --> UI_Input
-
-    UI_Input -- "Screenshot / Figma" --> Designer[Gemini 3 Pro <br> <b>Designer</b>]
-    Designer --> |"Clone this visual"| UI_Build[Generated Component]
-
-    UI_Input -- "New Interactive Feature" --> UI_Logic
-    UI_Logic -- "Complex State (Redux)" --> Senior[Claude Sonnet 4.5 <br> <b>Senior Logic</b>]
-    UI_Logic -- "Standard Layout" --> Composer[Composer 1 <br> <b>Builder</b>]
-
-    %% The "Vibe Loop"
-    UI_Build --> UI_Review
-    UI_Review -- "Wrong Color / Spacing" --> Styler[Gemini 3 Flash <br> <b>Fast Fixer</b>]
-    Styler --> |Instant Fix| UI_Review
-    UI_Review -- "Looks Good" --> GruntWork
-
-    %% ==========================================
-    %% BRANCH 2: THE LOGIC / BACKEND PATH
-    %% ==========================================
     Q1 -- "Logic & Backend" --> Logic_Stage
 
-    %% Planning Phase
-    Logic_Stage -- "Planning / Architecture" --> Architect[GPT-5.2 <br> <b>Architect</b>]
-    Architect --> |Creates plan.md| Implementation
+    %% UI Branch
+    UI_Input -- "Screenshot" --> Designer
+    Designer --> UI_Build
+    UI_Build --> UI_Review
+    UI_Review -- "Tweaks" --> Styler
+    Styler --> UI_Review
+    UI_Review -- "Looks Good" --> GruntWork
 
-    %% Implementation Phase
-    Logic_Stage -- "Writing Code" --> Implementation
-    Implementation -- "Multi-file Edit" --> Composer
-    Implementation -- "Complex Logic" --> Senior
-    Implementation -- "Small Fix" --> Daily[Gemini 3 Flash <br> <b>Daily Driver</b>]
+    UI_Input -- "New Feature" --> UI_Logic
+    UI_Logic -- "Complex State" --> Senior
+    UI_Logic -- "Standard" --> Composer
 
-    %% ==========================================
-    %% SHARED BRANCH: GRUNT WORK & REVIEW
-    %% ==========================================
+    %% Backend Branch
+    Logic_Stage -- "Planning" --> Architect
+    Architect --> Implementation
+    Logic_Stage -- "Coding" --> Implementation
+    Logic_Stage -- "Database" --> DBA
+
+    %% Implementation Choices
+    Implementation -- "Multi-file" --> Composer
+    Implementation -- "Complex" --> Senior
+    Implementation -- "Simple" --> Daily
+
+    %% Database Choices
+    DBA -- "New Table" --> Senior
+    DBA -- "Destructive" --> Engineer
+
+    %% Convergence to Grunt Work
     Composer --> GruntWork
     Senior --> GruntWork
     Daily --> GruntWork
 
-    %% The "Intern" Loop
-    GruntWork -- "Yes (Tests, Types)" --> Intern[DeepSeek V3 <br> <b>Intern</b>]
-    GruntWork -- "No / Done" --> Review
-    Intern -- "Bulk Generated" --> Review
+    %% Grunt Work Decision
+    GruntWork -- "Yes" --> Intern
+    GruntWork -- "No" --> Review
+    Intern --> Review
 
-    %% The Review Loop
-    Review -- "Review Entire Context" --> Critique[Gemini 3 Pro <br> <b>Auditor</b>]
-    Review -- "Stuck / Bug" --> Engineer[Claude Opus 4.5 <br> <b>Expert</b>]
+    %% Final Review Loop
+    Review -- "Audit Context" --> Critique
+    Review -- "Bug/Stuck" --> Engineer
 
-    Critique --> |LGTM| Deploy([✅ Deploy])
-    Engineer --> |Fixed| Deploy
+    %% Database Bypass (Safety)
+    Senior -.-> |"Migration File"| Review
+    Engineer -.-> |"Safe Script"| Review
+
+    %% Finish
+    Critique --> Deploy
+    Engineer --> Deploy
+
+    %% ==========================================
+    %% 7. APPLY STYLES
+    %% ==========================================
+    class Q1,UI_Input,UI_Review,UI_Logic,Logic_Stage,DBA,Implementation,GruntWork,Review decision
+    class Designer,Architect,Composer,Senior,Daily,Critique persona
+    class Engineer expert
+    class Intern intern
+    class Start,Deploy finish
 ```
 
 ## Notes & Fallbacks
 
-- **DeepSeek Availability:** If `DeepSeek V3` is unavailable for testing or "intern" tasks, the fallback model is **Gemini 3 Flash**.
-
+- **DeepSeek Availability:** If `DeepSeek V3` is unavailable for testing or "intern" tasks, the fallback model is `Gemini 3 Flash`.
