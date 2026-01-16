@@ -1,37 +1,45 @@
 # Cursor Model Decision Tree
 
-This document serves as a strategic guide for selecting the most effective AI models within Cursor based on the nature of the task. By leveraging the specific strengths of models like Claude Sonnet 4.5, Gemini 3 Pro, and GPT-5.2, developers can optimize their workflow across architectural planning, UI development, logic implementation, and testing.
+This document serves as a strategic guide for selecting the most effective AI models within Cursor based on the nature of the task. By leveraging the "Model Arbitrage" strategy, we optimize for cost and capability.
 
 *Last Updated: January 2026 (Cursor v2.3)*
 
+## 💰 The "Why": 2026 Model Pricing Context
+
+We switch models because the price difference is massive (up to 100x).
+
+| Role             | Model                 | Cost (Input/Output)  | Best Use Case                                |
+| :--------------- | :-------------------- | :------------------- | :------------------------------------------- |
+| **Engineer**     | **Claude Opus 4.5**   | $$$ ($5.00 / $25.00) | "Break Glass" only. Complex bugs & security. |
+| **Senior**       | **Claude Sonnet 4.5** | $$ ($3.00 / $15.00)  | Production logic & complex state.            |
+| **Architect**    | **GPT-5.2**           | $$ ($1.75 / $14.00)  | Planning & Architecture.                     |
+| **Builder**      | **Composer 1**        | $ ($1.25 / $10.00)   | Multi-file editing (Agent mode).             |
+| **Auditor**      | **Gemini 3 Pro**      | $$ ($2.00 / $12.00)  | 2M Context Window (Repo-wide reviews).       |
+| **Intern/Daily** | **Gemini 3 Flash**    | $ ($0.50 / $3.00)    | Bulk tests, boilerplate, and fast fixes.     |
+
+---
+
 ## The 3 "Golden Paths"
 
-If the tree looks complex, just memorize these three common paths. They cover 90% of daily work.
+If the tree looks complex, just memorize these three common paths.
 
 ### 1. The "New Feature" Path (Full Stack)
-Plan: `GPT-5.2` creates `plan.md`.
-
-Build: `Composer 1` creates the file structure and skeleton code.
-
-Refine: `Claude Sonnet 4.5` fills in the hard logic (auth, database).
-
-Tests: `DeepSeek V3` generates the test suite.
+* **Plan:** `GPT-5.2` creates `plan.md`.
+* **Build:** `Composer 1` creates the file structure and skeleton code.
+* **Refine:** `Claude Sonnet 4.5` fills in the hard logic (auth, database).
+* **Tests:** `Gemini 3 Flash` generates the test suite.
 
 ### 2. The "Pixel Perfect" Path (Frontend)
-
-See: Paste screenshot into `Gemini 3 Pro`. Prompt: "Clone this using Tailwind."
-
-Tweak: Use `Gemini 3 Flash` to nudge pixels: "Move that button 2px right."
-
-Logic: Switch to `Sonnet 4.5` only if you need to wire up the API connection.
+* **See:** Paste screenshot into `Gemini 3 Pro`. Prompt: "Clone this using Tailwind."
+* **Tweak:** Use `Gemini 3 Flash` to nudge pixels: "Move that button 2px right."
+* **Logic:** Switch to `Sonnet 4.5` only if you need to wire up the API connection.
 
 ### 3. The "Legacy Rescue" Path (Refactoring)
+* **Analyze:** `Gemini 3 Pro` reads the whole folder (2M context). Prompt: "Explain how this legacy auth flow works."
+* **Refactor:** `Claude Opus 4.5` (The big gun). Prompt: "Rewrite this strictly to match the new pattern. Do not break existing users."
+* **Verify:** `Gemini 3 Flash` writes regression tests to ensure safety.
 
-Analyze: `Gemini 3 Pro` reads the whole folder (2M context). Prompt: "Explain how this legacy auth flow works."
-
-Refactor: `Claude Opus 4.5` (The big gun). Prompt: "Rewrite this strictly to match the new pattern. Do not break existing users."
-
-Verify: `DeepSeek V3` writes regression tests to ensure safety.
+---
 
 ## Decision Tree Diagram
 
@@ -87,7 +95,7 @@ graph LR
     subgraph QA_Flow ["✅ QA & Review"]
         direction TB
         GruntWork{Tests/Docs?}
-        Intern[DeepSeek V3<br><b>Intern</b>]
+        Intern[Gemini 3 Flash<br><b>Intern</b>]
         Review{Final Check}
         Critique[Gemini 3 Pro<br><b>Auditor</b>]
         Deploy([✅ Deploy])
@@ -163,20 +171,7 @@ graph LR
     class Engineer expert
 
     %% Budget/Fast Models (Purple) - "The Grunt Work"
-    %% Added Styler (UI) and Daily (Backend) here so all Flash/DeepSeek nodes are Purple
     class Intern,Styler,Daily intern
 
     %% Start/End (Green)
     class Start,Deploy finish
-```
-
-### Legend
-
-- 🟡 Yellow Diamonds: Decisions you need to make.
-- 🔵 Blue Rounded Rects: The AI Models (The "Workers").
-- 🔴 Red: High-Risk/Expert paths (DBA/Security).
-- 🟣 Purple: Low-Cost/Intern paths.
-
-## Notes & Fallbacks
-
-- **DeepSeek Availability:** If `DeepSeek V3` is unavailable for testing or "intern" tasks, the fallback model is `Gemini 3 Flash`.
