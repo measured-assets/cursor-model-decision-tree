@@ -160,6 +160,13 @@ graph LR
     class Start,Deploy finish
 ```
 
+### Legend
+
+- 🟡 Yellow Diamonds: Decisions you need to make.
+- 🔵 Blue Rounded Rects: The AI Models (The "Workers").
+- 🔴 Red: High-Risk/Expert paths (DBA/Security).
+- 🟣 Purple: Low-Cost/Intern paths.
+
 ## Notes & Fallbacks
 
 - **DeepSeek Availability:** If `DeepSeek V3` is unavailable for testing or "intern" tasks, the fallback model is `Gemini 3 Flash`.
