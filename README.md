@@ -153,10 +153,20 @@ graph LR
     %% ==========================================
     %% 7. APPLY STYLES
     %% ==========================================
+    %% Decisions (Yellow)
     class Q1,UI_Input,UI_Review,UI_Logic,Logic_Stage,DBA,Implementation,GruntWork,Review decision
-    class Designer,Architect,Composer,Senior,Daily,Critique persona
+
+    %% Premium Models (Blue) - "The Brains"
+    class Designer,Architect,Composer,Senior,Critique persona
+
+    %% Expert/High Risk (Red) - "The Safety Net"
     class Engineer expert
-    class Intern intern
+
+    %% Budget/Fast Models (Purple) - "The Grunt Work"
+    %% Added Styler (UI) and Daily (Backend) here so all Flash/DeepSeek nodes are Purple
+    class Intern,Styler,Daily intern
+
+    %% Start/End (Green)
     class Start,Deploy finish
 ```
 
